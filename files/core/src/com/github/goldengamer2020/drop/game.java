@@ -8,17 +8,30 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class Drop extends ApplicationAdapter {
+public class game extends ApplicationAdapter {
 	SpriteBatch batch;
-	Texture playerTexture;
-	Sprite p;
 	Boolean isDead = false;
+
+	//Textures
 	Texture pipeImg;
+	Texture playerTexture;
+
+	//Sprites
 	Sprite pipe;
+	Sprite pipe2;
+	Sprite p;
+
+	float pVel = 0;
+	float pAcc = -0.1f;
+	float pY = 0;
+
+	Enemy Enemy = new Enemy();
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		Enemy.enemyImg = new Texture("placeholderRed.png");
+		Enemy.enemy = new Sprite(Enemy.enemyImg);
 		playerTexture = new Texture("placeholderGreen.png");
 		p = new Sprite(playerTexture);
 		p.setPosition(Gdx.graphics.getWidth()/2 - p.getWidth()/2,
@@ -26,6 +39,8 @@ public class Drop extends ApplicationAdapter {
 		pipeImg = new Texture("pipe____totally.png");
 		pipe = new Sprite(pipeImg);
 		pipe.setPosition(800,0);
+		pipe2 = new Sprite(pipeImg);
+		//pipe.setPosition(800, );
 	}
 
 	@Override
@@ -41,16 +56,26 @@ public class Drop extends ApplicationAdapter {
 			System.out.println("You Died");
 			System.exit(0);
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-			p.translateY(1f);
-			System.out.println("( " + p.getX() + ", " + p.getY() + " )");
-
-		} else if(!Gdx.input.isKeyPressed((Input.Keys.SPACE))) {
-			p.translateY(-2f);
-			System.out.println("( " + p.getX() + ", " + p.getY() + " )");
-
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+				pAcc = .1f;
+				pVel += 5;
 		}
 
+		if(p.getY() >= 0) {
+			if(p.getY() <= pipe.getY() + pipe.getHeight()) {
+				if(p.getX()+p.getWidth() >= pipe.getX() && p.getX() <= pipe.getX() + pipe.getWidth()) {
+					System.exit(0);
+					isDead = true;
+				}
+			}
+		}
+		System.out.println(p.getX() + " " + p.getWidth());
+		//Gravity
+		pAcc = -.1f;
+		pVel += pAcc;
+		pY = p.getY();
+		pY += pVel;
+		p.setY(pY);
 		//Pipe Movement
 		pipe.translateX(-1f);
 
@@ -58,7 +83,11 @@ public class Drop extends ApplicationAdapter {
 
 		ScreenUtils.clear(0, 0, 100, 1);
 		batch.begin();
-		batch.draw(p, p.getX(), p.getY());
+		if(isDead != true) {
+			batch.draw(p, p.getX(), p.getY());
+		}
+		batch.draw(Enemy.enemy, 0, 0);
+		batch.draw(Enemy.enemy, 0, 480);
 		batch.draw(pipe, pipe.getX(), pipe.getY());
 
 		batch.end();
