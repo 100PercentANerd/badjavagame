@@ -18,12 +18,10 @@ public class game extends ApplicationAdapter {
 
 	//Sprites
 	Sprite pipe;
-	Sprite pipe2;
 	Sprite p;
 
 	float pVel = 0;
 	float pAcc = -0.1f;
-	float pY = 0;
 
 	Enemy Enemy = new Enemy();
 
@@ -39,43 +37,31 @@ public class game extends ApplicationAdapter {
 		pipeImg = new Texture("pipe____totally.png");
 		pipe = new Sprite(pipeImg);
 		pipe.setPosition(800,0);
-		pipe2 = new Sprite(pipeImg);
-		//pipe.setPosition(800, );
 	}
 
 	@Override
 	public void render () {
 		//Input & Player movement
 
-		if(p.getY()+64 > 480) {
-			isDead = true;
-			System.out.println("You Died");
-			System.exit(0);
+		if(p.getY()+p.getHeight() > 480) {
+			dead();
 		} else if(p.getY() <= 0) {
-			isDead = true;
-			System.out.println("You Died");
-			System.exit(0);
+			dead();
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 				pAcc = .1f;
-				pVel += 5;
+				pVel += 7;
 		}
 
-		if(p.getY() >= 0) {
-			if(p.getY() <= pipe.getY() + pipe.getHeight()) {
-				if(p.getX()+p.getWidth() >= pipe.getX() && p.getX() <= pipe.getX() + pipe.getWidth()) {
-					System.exit(0);
-					isDead = true;
-				}
+			if(p.getY() >= 0 && p.getY() <= pipe.getY() + pipe.getHeight() && p.getX()+p.getWidth() >= pipe.getX() && p.getX() <= pipe.getX() + pipe.getWidth()) {
+				dead();
 			}
-		}
+
 		System.out.println(p.getX() + " " + p.getWidth());
 		//Gravity
 		pAcc = -.1f;
 		pVel += pAcc;
-		pY = p.getY();
-		pY += pVel;
-		p.setY(pY);
+		p.setY(p.getY()+pVel);
 		//Pipe Movement
 		pipe.translateX(-1f);
 
@@ -98,5 +84,10 @@ public class game extends ApplicationAdapter {
 		batch.dispose();
 		playerTexture.dispose();
 		pipeImg.dispose();
+	}
+
+	public void dead() {
+		isDead = true;
+		System.exit(0);
 	}
 }

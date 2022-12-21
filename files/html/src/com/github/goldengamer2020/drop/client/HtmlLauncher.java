@@ -3,7 +3,7 @@ package com.github.goldengamer2020.drop.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.github.goldengamer2020.drop.Drop;
+import com.github.goldengamer2020.drop.game;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -14,6 +14,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                return new Drop();
+                return new game();
         }
 }
